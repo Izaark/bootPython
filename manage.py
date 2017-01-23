@@ -3,6 +3,7 @@ from flask import request
 
 import json
 from config import DevelopmentConfig
+from handler import recive_message
 
 
 app = Flask(__name__)
@@ -22,13 +23,13 @@ def webhook():
 
 		for page_entry in data['entry']:
 			for message_event in page_entry['messaging']:
-					evento = message_event['message']
-					print evento['text']
+				if 'message' in message_event:
+					recive_message(message_event,app.config['PAGE_ACCES_TOKEN'])
 
 		return "ok"
 
 @app.route('/', methods = ['GET'])
 def index():
-	return 'Hola al curso de Bot!'
+	return 'Hola'
 if __name__ == '__main__':
 	app.run(port = 8000)
