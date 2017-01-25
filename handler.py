@@ -2,6 +2,10 @@
 # -*- coding: utf-8 -*-
 import requests,json
 from structs import typing_message,text_message
+from models import UserModel
+
+
+
 
 def recive_message(event,token):
 	sender_id = event['sender']['id']
@@ -10,17 +14,33 @@ def recive_message(event,token):
 	message = event['message']
 	text = message['text'] 
 	print text
+	handler_action(sender_id,token)
 
-	typing = typing_message(sender_id)
-	call_send_API(typing,token)
+def handler_action(sender_id,token):
 
-	user = call_userAPI(sender_id, token)
-	firt_name = user['first_name']
-	message = "Hola {}, como estas ?".format(firt_name)
+	user = UserModel.find(user_id=sender_id)
+	if user is not None:
+		message = 'Gracias por regresar'
 
-	message = text_message(sender_id,message)
-	call_send_API(message,token)
+		typing = typing_message(sender_id)
+		call_send_API(typing,token)
 
+		message = text_message(sender_id,message)
+		call_send_API(message,token)
+	else:
+
+		user = call_userAPI(sender_id, token)
+		UserModel.new(firt_name=user['first_name'],last_name=user['last_name'],
+			gender=user['gender'],user_id=sender_id)
+
+		firt_name = user['first_name']
+		message = "Usuario {}, registrado !!".format(firt_name)
+
+		typing = typing_message(sender_id)
+		call_send_API(typing,token)
+
+		message = text_message(sender_id,message)
+		call_send_API(message,token)
 
 def call_send_API(data,token):
 	res = requests.post('https://graph.facebook.com/v2.6/me/messages',
