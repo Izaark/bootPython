@@ -1,0 +1,10 @@
+[
+	{
+		"title":"Mensaje enviado",
+		"content":"Hola usuario, se registaron tus datos correctamente!",
+		"context":"Welcome",
+		"type":"common",
+		"order":1,
+		"type_message":"text_message"
+	}
+]
